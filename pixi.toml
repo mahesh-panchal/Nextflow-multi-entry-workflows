@@ -1,0 +1,14 @@
+[workspace]
+authors = ["Mahesh Binzer-Panchal <mahesh.binzer-panchal@nbis.se>"]
+channels = ["conda-forge", "bioconda"]
+name = "Nextflow best practices"
+platforms = ["osx-arm64", "linux-64"]
+version = "1.0.0"
+
+[tasks]
+
+[dependencies]
+nextflow = ">=25.10.4,<26"
+nf-core = ">=3.5.2,<4"
+nf-test = ">=0.9.5,<0.10"
+gh = ">=2.88.1,<3"
