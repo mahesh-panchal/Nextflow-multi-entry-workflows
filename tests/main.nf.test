@@ -49,9 +49,12 @@ nextflow_pipeline {
             assertAll(
                 { assert workflow.success },
                 { assert workflow.trace.succeeded().size() > 0 },
-                { assert new File("$outputDir/trimmed").exists() },
-                { assert new File("$outputDir/fastp").exists() },
-                { assert new File("$outputDir/salmon").exists() },
+                { assert path("$outputDir/trimmed").exists() },
+                { assert path("$outputDir/fastp").exists() },
+                { assert path("$outputDir/salmon").exists() },
+                // Index samplesheet written at outdir root with expected header
+                { assert path("$outputDir/cleaned_fastq.csv").exists() },
+                { assert path("$outputDir/cleaned_fastq.csv").text.readLines()[0] == '"sample","read1","read2","strandedness"' },
                 { assert snapshot(
                     // Snapshot only deterministic quantification outputs;
                     // aux_info/ (fld.gz, meta_info.json) and logs/ (salmon_quant.log)
@@ -84,9 +87,12 @@ nextflow_pipeline {
             assertAll(
                 { assert workflow.success },
                 { assert workflow.trace.succeeded().size() > 0 },
-                { assert new File("$outputDir/trimmed").exists() },
-                { assert new File("$outputDir/fastp").exists() },
-                { assert new File("$outputDir/salmon").exists() },
+                { assert path("$outputDir/trimmed").exists() },
+                { assert path("$outputDir/fastp").exists() },
+                { assert path("$outputDir/salmon").exists() },
+                // Index samplesheet written at outdir root with expected header
+                { assert path("$outputDir/cleaned_fastq.csv").exists() },
+                { assert path("$outputDir/cleaned_fastq.csv").text.readLines()[0] == '"sample","read1","read2","strandedness"' },
                 { assert snapshot(
                     // Snapshot only deterministic quantification outputs;
                     // aux_info/ (fld.gz, meta_info.json) and logs/ (salmon_quant.log)

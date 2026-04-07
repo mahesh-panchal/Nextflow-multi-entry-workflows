@@ -50,7 +50,7 @@ nextflow_pipeline {
             assertAll(
                 { assert workflow.success },
                 { assert workflow.trace.succeeded().size() > 0 },
-                { assert new File("$outputDir/salmon").exists() },
+                { assert path("$outputDir/salmon").exists() },
                 { assert snapshot(
                     // Snapshot only deterministic quantification outputs;
                     // aux_info/ (fld.gz, meta_info.json) and logs/ (salmon_quant.log)
@@ -84,7 +84,7 @@ nextflow_pipeline {
             assertAll(
                 { assert workflow.success },
                 { assert workflow.trace.succeeded().size() > 0 },
-                { assert new File("$outputDir/salmon").exists() },
+                { assert path("$outputDir/salmon").exists() },
                 { assert snapshot(
                     // Snapshot only deterministic quantification outputs;
                     // aux_info/ (fld.gz, meta_info.json) and logs/ (salmon_quant.log)

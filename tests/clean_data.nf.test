@@ -25,12 +25,12 @@ nextflow_pipeline {
                 { assert workflow.success },
                 { assert workflow.trace.succeeded().size() > 0 },
                 // FASTP produced trimmed FASTQ files under outdir/trimmed/
-                { assert new File("$outputDir/trimmed").exists() },
+                { assert path("$outputDir/trimmed").exists() },
                 // FASTP JSON QC reports
-                { assert new File("$outputDir/fastp").exists() },
+                { assert path("$outputDir/fastp").exists() },
                 // Index samplesheet written at outdir root with expected header
-                { assert new File("$outputDir/samplesheet.csv").exists() },
-                { assert path("$outputDir/samplesheet.csv").text.readLines()[0] == "sample,fastq_1,fastq_2,strandedness" }
+                { assert path("$outputDir/cleaned_fastq.csv").exists() },
+                { assert path("$outputDir/cleaned_fastq.csv").text.readLines()[0] == '"sample","read1","read2","strandedness"' }
             )
         }
     }

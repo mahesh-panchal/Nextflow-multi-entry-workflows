@@ -20,7 +20,7 @@ workflow {
                 sample: meta.id,
                 read1: meta.single_end ? reads : reads.first(),
                 read2: meta.single_end ? ''    : reads.last(),
-                strand: meta.strandedness,
+                strandedness: meta.strandedness,
             ]
         }
     def ch_fastp_reports = CLEAN_DATA.out.json.mix( CLEAN_DATA.out.html )
