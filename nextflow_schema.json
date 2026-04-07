@@ -33,18 +33,40 @@
         }
       }
     },
+    "workflow_control": {
+      "title": "Workflow control options",
+      "type": "object",
+      "fa_icon": "fas fa-tasks",
+      "description": "Control which workflow stages to execute.",
+      "required": ["stages"],
+      "properties": {
+        "stages": {
+          "type": "array",
+          "description": "List of workflow stages to execute. Valid values: 'clean', 'quantify'",
+          "items": {
+            "type": "string",
+            "enum": ["clean", "quantify"]
+          },
+          "uniqueItems": true,
+          "minItems": 1,
+          "default": ["clean", "quantify"],
+          "fa_icon": "fas fa-list-check",
+          "help_text": "Use ['clean'] for clean_data.nf, ['quantify'] for quant_data.nf, or ['clean', 'quantify'] for main.nf"
+        }
+      }
+    },
     "reference_genome_options": {
       "title": "Reference genome options",
       "type": "object",
       "fa_icon": "fas fa-dna",
-      "description": "Reference genome files required for quantification (main.nf and quant_data.nf only). These parameters are optional at schema validation time; their existence is verified at runtime when they are used.",
+      "description": "Reference genome files required when 'quantify' step is included.",
       "properties": {
         "genome_fasta": {
           "type": "string",
           "format": "file-path",
           "pattern": "^\\S+\\.(fa|fasta|fna)(\\.gz)?$",
           "description": "Genome sequences in FASTA format.",
-          "help_text": "Required when running `main.nf` or `quant_data.nf`. Verified with `checkIfExists: true` at runtime.",
+          "help_text": "Required when 'quantify' is in params.stages.",
           "errorMessage": "Genome FASTA must have extension '.fa', '.fasta', or '.fna' (optionally gzipped)",
           "fa_icon": "fas fa-file"
         },
@@ -53,7 +75,7 @@
           "format": "file-path",
           "pattern": "^\\S+\\.gtf(\\.gz)?$",
           "description": "Genome annotation file in GTF format.",
-          "help_text": "Required when running `main.nf` or `quant_data.nf`. Verified with `checkIfExists: true` at runtime.",
+          "help_text": "Required when 'quantify' is in params.stages.",
           "errorMessage": "GTF file must have extension '.gtf' or '.gtf.gz'",
           "fa_icon": "fas fa-file-alt"
         },
@@ -62,7 +84,7 @@
           "format": "file-path",
           "pattern": "^\\S+\\.(fa|fasta|fna)(\\.gz)?$",
           "description": "Transcript sequences in FASTA format (used by Salmon in alignment-free mode).",
-          "help_text": "Required when running `main.nf` or `quant_data.nf`. Verified with `checkIfExists: true` at runtime.",
+          "help_text": "Required when 'quantify' is in params.stages.",
           "errorMessage": "Transcript FASTA must have extension '.fa', '.fasta', or '.fna' (optionally gzipped)",
           "fa_icon": "fas fa-file"
         }
@@ -86,7 +108,27 @@
   },
   "allOf": [
     { "$ref": "#/$defs/input_output_options" },
+    { "$ref": "#/$defs/workflow_control" },
     { "$ref": "#/$defs/reference_genome_options" },
-    { "$ref": "#/$defs/generic_options" }
+    { "$ref": "#/$defs/generic_options" },
+    {
+      "if": {
+        "properties": {
+          "stages": {
+            "contains": {
+              "const": "quantify"
+            }
+          }
+        }
+      },
+      "then": {
+        "required": ["genome_fasta", "gtf", "transcript_fasta"],
+        "properties": {
+          "genome_fasta": { "exists": true },
+          "gtf": { "exists": true },
+          "transcript_fasta": { "exists": true }
+        }
+      }
+    }
   ]
 }

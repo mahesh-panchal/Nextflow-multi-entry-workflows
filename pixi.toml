@@ -9,7 +9,7 @@ version = "1.0.0"
 clean-all = "git clean -e .pixi -fdx"
 lint = "nextflow lint -exclude .pixi -exclude nf-test.config ."
 [tasks.nf-tests]
-cmd = "nf-test test --profile {{ profile }}"
+cmd = "nf-test test --stop-on-first-failure --profile {{ profile }}"
 args = [
     { arg = "profile", default = "docker", "choices" = ["docker", "singularity", "conda"] }
 ]

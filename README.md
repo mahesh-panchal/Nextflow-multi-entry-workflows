@@ -128,4 +128,4 @@ nextflow run quant_data.nf \
 
 ---
 
-See [CONTRIBUTORS.md](CONTRIBUTORS.md) for contribution, development, and testing instructions.
+See [CONTRIBUTORS](CONTRIBUTORS.md) for contribution, development, and testing instructions.

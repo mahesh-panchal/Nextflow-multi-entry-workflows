@@ -1,26 +1,15 @@
-include { samplesheetToList } from 'plugin/nf-schema'
+include { samplesheetToList; validateParameters } from 'plugin/nf-schema'
 
 include { CLEAN_DATA } from "./subworkflows/local/clean_data"
 include { QUANT_DATA } from "./subworkflows/local/quant_data"
 
-// ---------------------------------------------------------------------------
-// Validate inputs and convert the samplesheet into a reads channel.
-// nf-schema checks every row against assets/schemas/schema_input.json before
-// any process runs.
-// Column order from schema: sample(meta.id), fastq_1, fastq_2, strandedness(meta.strandedness)
-// ---------------------------------------------------------------------------
-def samplesheet_to_channel(csv) {
-    channel.fromList( samplesheetToList( csv, "${projectDir}/assets/schemas/schema_input.json" ) )
-        .map { meta, fastq_1, fastq_2 ->
-            def reads    = fastq_2 ? [ fastq_1, fastq_2 ] : fastq_1
-            def new_meta = meta + [ single_end: !fastq_2 ]
-            [ new_meta, reads ]
-        }
-}
+params.stages = ["clean", "quantify"]
 
 workflow {
 
     main:
+    // Validation
+    validateParameters()
     def ch_reads = samplesheet_to_channel( params.input )
 
     CLEAN_DATA( ch_reads )
@@ -52,4 +41,19 @@ output {
     salmon {
         path 'salmon'
     }
+}
+
+// ---------------------------------------------------------------------------
+// Validate inputs and convert the samplesheet into a reads channel.
+// nf-schema checks every row against assets/schemas/schema_input.json before
+// any process runs.
+// Column order from schema: sample(meta.id), fastq_1, fastq_2, strandedness(meta.strandedness)
+// ---------------------------------------------------------------------------
+def samplesheet_to_channel(csv) {
+    channel.fromList( samplesheetToList( csv, "${projectDir}/assets/schemas/schema_input.json" ) )
+        .map { meta, fastq_1, fastq_2 ->
+            def reads    = fastq_2 ? [ fastq_1, fastq_2 ] : fastq_1
+            def new_meta = meta + [ single_end: !fastq_2 ]
+            [ new_meta, reads ]
+        }
 }
