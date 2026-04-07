@@ -6,14 +6,24 @@ platforms = ["osx-arm64", "linux-64"]
 version = "1.0.0"
 
 [tasks]
-clean-all = "git clean -e .pixi -fdx"
-lint = "nextflow lint -exclude .pixi -exclude nf-test.config ."
+
+[tasks.clean-all]
+description = "Remove all untracked files and directories, preserving the .pixi environment"
+cmd = "git clean -e .pixi -fdx"
+
+[tasks.lint]
+description = "Run nextflow linter on the current directory, excluding .pixi and nf-test configuration"
+cmd = "nextflow lint -exclude .pixi -exclude nf-test.config ."
+
 [tasks.nf-tests]
+description = "Run the nf-test suite using the specified execution profile"
 cmd = "nf-test test --stop-on-first-failure --profile {{ profile }}"
 args = [
     { arg = "profile", default = "docker", "choices" = ["docker", "singularity", "conda"] }
 ]
+
 [tasks.update-nf-tests]
+description = "Run the nf-test suite and update test snapshots using the specified execution profile"
 cmd = "nf-test test --update-snapshot --profile {{ profile }}"
 args = [
     { arg = "profile", default = "docker", "choices" = ["docker", "singularity", "conda"] }
